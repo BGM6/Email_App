@@ -1,29 +1,18 @@
-require('dotenv').config();
 const express = require('express');
-const passport = require('passport');
-const GoogleStrategy = require('passport-google-oauth20').Strategy;
+const connectDB = require('./config/db');
+require('./models/User');
+require('./services/passport');
 const PORT = process.env.PORT || 5000;
 
 const app = express();
+
+//MongoDB
+connectDB().then(() => console.log('MongoDB Connected...'));
 
 //Middleware
 app.use(express.json());
 app.use(express.urlencoded({extended: true}));
 
-passport.use(new GoogleStrategy({
-	clientID: process.env.GOOGLE_CLIENT_ID,
-	clientSecret: process.env.GOOGLE_CLIENT_SECRET,
-	callbackURL: '/auth/google/callback',
-}, (accessToken, refreshToken, profile, done) => {
-	console.log('Access Token:', accessToken);
-	console.log('Refresh Token:', refreshToken);
-	console.log('Profile:', profile);
-}));
-
-app.get('/auth/google/', passport.authenticate('google', {
-	scope: ['profile', 'email']
-}));
-
-app.get('/auth/google/callback', passport.authenticate('google'));
+require('./routes/authRoutes')(app);
 
 app.listen(PORT, () => console.log(`Server running on PORT ${PORT}`));
