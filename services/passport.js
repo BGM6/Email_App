@@ -8,8 +8,13 @@ passport.use(new GoogleStrategy({
 	clientID: process.env.GOOGLE_CLIENT_ID,
 	clientSecret: process.env.GOOGLE_CLIENT_SECRET,
 	callbackURL: '/auth/google/callback',
-}, async (accessToken, refreshToken, profile, done) => {
-	const user = new User({googleId: profile.id});
-	await user.save();
-	// new User({googleId: profile.id}).save().then(r => r);
+}, (accessToken, refreshToken, profile, done) => {
+	User.findOne({googleId: profile.id}).then(existingUser => {
+		if (existingUser) {
+			done(null, existingUser);
+		} else {
+			new User({googleId: profile.id}).save()
+				.then(user => done(null, user));
+		}
+	});
 }));
