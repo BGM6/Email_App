@@ -3,17 +3,17 @@ import {connect} from 'react-redux';
 import {Link} from 'react-router-dom';
 
 const Header = (props) => {
-	console.log(props.auth)
+	console.log(props.auth);
 	const renderContent = () => {
 		switch (props.auth) {
 			case null:
 				return;
 			case false:
 				return (
-					<li><Link to="/auth/google">Login With Google</Link></li>
+					<li><a href="/auth/google">Login With Google</a></li>
 				);
 			default:
-				return <li><Link to="/api/logout">Logout</Link></li>;
+				return <li><a href="/api/logout">Logout</a></li>;
 		}
 	};
 
@@ -22,7 +22,7 @@ const Header = (props) => {
 			<nav>
 				<div className="nav-wrapper">
 					<Link
-						to={props.auth ? "/surveys" : '/'}
+						to={props.auth ? '/surveys' : '/'}
 						className="left brand-logo"
 					>
 						Emaily
